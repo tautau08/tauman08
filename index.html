@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tauhidur Rahman Tauhid - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- SMTP.js library for sending emails -->
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <style>
+        :root {
+            --primary-accent: #E9A319;
+            --secondary-accent: #FAD59A;
+            --main-text: #FCEFCB;
+            --dark-bg: #0d0d0d;
+        }
+        
+        /* Custom styles for the portfolio */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: var(--main-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Glassmorphism effect for cards and inputs */
+        .glass-card, .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(233, 163, 25, 0.2);
+            border-color: rgba(233, 163, 25, 0.3);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.07);
+        }
+        
+        .glass-input:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(233, 163, 25, 0.3);
+        }
+
+        /* Custom scrollbar for a modern look */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0d0d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #E9A319 0%, #A86523 100%);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #FFB82E 0%, #C97A2C 100%);
+        }
+
+        /* Custom text colors from the provided palette */
+        .text-primary-accent { color: #E9A319; }
+        .text-secondary-accent { color: #FAD59A; }
+        .text-main { color: #FCEFCB; }
+        .bg-primary-accent { background: linear-gradient(135deg, #E9A319 0%, #A86523 100%); }
+        .border-primary-accent { border-color: #A86523; }
+        .hover-bg-primary-accent:hover { background: linear-gradient(135deg, #FFB82E 0%, #C97A2C 100%); }
+        
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+        
+        /* Animated background elements */
+        .bg-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.2;
+            z-index: -1;
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .blob-1 {
+            background: linear-gradient(135deg, #E9A319 0%, #A86523 100%);
+            top: -300px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+        
+        .blob-2 {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+            bottom: -300px;
+            left: -200px;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, 20px) rotate(5deg); }
+            50% { transform: translate(0, 40px) rotate(0deg); }
+            75% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        
+        /* Section styling */
+        section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Skill badges */
+        .skill-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .skill-badge:hover {
+            transform: translateY(-3px);
+            background: rgba(233, 163, 25, 0.15);
+            border-color: rgba(233, 163, 25, 0.3);
+        }
+        
+        /* Project card styling */
+        .project-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #E9A319, #A86523);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        /* Navigation styling */
+        .nav-link {
+            position: relative;
+            padding-bottom: 4px;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #E9A319, #A86523);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="antialiased relative overflow-x-hidden">
+    <!-- Animated background elements -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-6xl">
+
+        <!-- Header / Hero Section -->
+        <header class="flex flex-col md:flex-row items-center justify-between mb-16 pt-16 animate-fade">
+            <div class="text-center md:text-left md:w-2/3 mb-12 md:mb-0">
+                <h1 class="text-4xl md:text-6xl font-bold text-main mb-3">Tauhidur Rahman <span class="text-primary-accent">Tauhid</span></h1>
+                <div class="inline-block bg-gradient-to-r from-[#E9A319] to-[#A86523] text-transparent bg-clip-text">
+                    <p class="text-xl md:text-2xl font-medium">Software Engineering Student & Full-Stack Developer</p>
+                </div>
+                <p class="mt-5 max-w-xl text-secondary-accent text-lg leading-relaxed">
+                    A passionate developer crafting elegant, efficient solutions from dynamic web applications to robust backend systems.
+                </p>
+                <div class="mt-10 flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#contact" class="bg-primary-accent text-white py-3 px-6 rounded-xl hover-bg-primary-accent transition-all duration-300 flex items-center justify-center font-medium shadow-lg hover:shadow-xl hover:shadow-[#E9A319]/20">
+                        <i data-feather="mail" class="mr-2 h-5 w-5"></i> Contact Me
+                    </a>
+                    <a href="#projects" class="border-2 border-primary-accent text-primary-accent py-3 px-6 rounded-xl hover:bg-[#E9A319]/10 transition-all duration-300 flex items-center justify-center font-medium">
+                        <i data-feather="briefcase" class="mr-2 h-5 w-5"></i> View Projects
+                    </a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="absolute inset-0 bg-gradient-to-br from-[#E9A319] to-[#A86523] rounded-full blur-xl opacity-30 animate-pulse"></div>
+                <img src="https://avatars.githubusercontent.com/u/127976351?v=4" alt="Tauhidur Rahman Tauhid" class="relative rounded-full w-56 h-56 md:w-72 md:h-72 object-cover border-4 border-primary-accent shadow-2xl z-10">
+            </div>
+        </header>
+
+        <!-- Navigation Links -->
+        <nav class="glass-card p-4 mb-16 sticky top-4 z-50 animate-fade delay-200">
+            <ul class="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+                <li><a href="#about" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium">About</a></li>
+                <li><a href="#skills" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium">Skills</a></li>
+                <li><a href="#projects" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium">Projects</a></li>
+                <li><a href="#education" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium">Education</a></li>
+                <li><a href="#achievements" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium">Achievements</a></li>
+                <li><a href="#contact" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium">Contact</a></li>
+            </ul>
+        </nav>
+
+        <!-- About Section -->
+        <section id="about" class="mb-20">
+            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+                About Me
+            </h2>
+            <div class="glass-card p-8">
+                <p id="about-text" class="text-lg text-main leading-relaxed">
+                    I am a dedicated Software Engineering student at the Islamic University of Technology (IUT) with a strong foundation in full-stack development. My passion lies in crafting beautiful user interfaces and building scalable, efficient backend systems. I have hands-on experience with a variety of modern technologies including React, Next.js, .NET, and blockchain development with Solidity. I thrive in collaborative environments and am always eager to learn and take on new challenges.
+                </p>
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-[#E9A319] mr-3 animate-pulse"></div>
+                        <span class="text-secondary-accent">Full-stack development</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-[#E9A319] mr-3 animate-pulse"></div>
+                        <span class="text-secondary-accent">Blockchain technology</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-[#E9A319] mr-3 animate-pulse"></div>
+                        <span class="text-secondary-accent">UI/UX design principles</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="mb-20">
+            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+                My Tech Stack
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Frontend -->
+                <div class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="layout" class="mr-2 text-primary-accent"></i> Front-End
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">HTML</span>
+                        <span class="skill-badge">CSS</span>
+                        <span class="skill-badge">JavaScript</span>
+                        <span class="skill-badge">React</span>
+                        <span class="skill-badge">Next.js</span>
+                        <span class="skill-badge">Tailwind CSS</span>
+                    </div>
+                </div>
+                <!-- Backend -->
+                <div class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="server" class="mr-2 text-primary-accent"></i> Back-End
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">C/C++</span>
+                        <span class="skill-badge">C#</span>
+                        <span class="skill-badge">Java</span>
+                        <span class="skill-badge">Kotlin</span>
+                        <span class="skill-badge">.NET Framework</span>
+                    </div>
+                </div>
+                <!-- DBMS -->
+                <div class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="database" class="mr-2 text-primary-accent"></i> DBMS
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">SQL Server</span>
+                        <span class="skill-badge">Firebase</span>
+                    </div>
+                </div>
+                <!-- Dev Tools -->
+                <div class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="tool" class="mr-2 text-primary-accent"></i> Dev Tools
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">VS Code</span>
+                        <span class="skill-badge">Visual Studio</span>
+                        <span class="skill-badge">IntelliJ IDEA</span>
+                        <span class="skill-badge">Postman</span>
+                        <span class="skill-badge">Android Studio</span>
+                    </div>
+                </div>
+                <!-- Blockchain -->
+                <div class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="box" class="mr-2 text-primary-accent"></i> Blockchain
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">Solidity</span>
+                        <span class="skill-badge">Hardhat</span>
+                        <span class="skill-badge">Ethers.js</span>
+                        <span class="skill-badge">Web3Modal</span>
+                    </div>
+                </div>
+                 <!-- Other -->
+                <div class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="code" class="mr-2 text-primary-accent"></i> Other
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">REST API</span>
+                        <span class="skill-badge">OOP</span>
+                        <span class="skill-badge">IPFS</span>
+                        <span class="skill-badge">Pinata</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="mb-20">
+            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+                Featured Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Project 1: CrypTau -->
+                <div class="glass-card p-6 flex flex-col project-card">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-semibold text-secondary-accent">CrypTau - NFT Marketplace</h3>
+                        <i data-feather="hexagon" class="text-primary-accent"></i>
+                    </div>
+                    <p class="text-main mt-3 mb-4 flex-grow">A full-stack NFT marketplace with blockchain-based ownership, smart contract integration, and real-time wallet connectivity using MetaMask.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge">Next.js</span>
+                        <span class="skill-badge">Solidity</span>
+                        <span class="skill-badge">Hardhat</span>
+                    </div>
+                    <div class="mt-5">
+                        <a href="https://github.com/tautau08" target="_blank" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium">
+                            View Live <i data-feather="arrow-up-right" class="ml-1 h-4 w-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Project 2: NikeDemo -->
+                <div class="glass-card p-6 flex flex-col project-card">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-semibold text-secondary-accent">NikeDemo-Webapp</h3>
+                        <i data-feather="shopping-bag" class="text-primary-accent"></i>
+                    </div>
+                    <p class="text-main mt-3 mb-4 flex-grow">A modern e-commerce web app inspired by Nike's store, featuring a responsive product catalog, interactive cart, and dynamic filtering.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge">React</span>
+                        <span class="skill-badge">Vite</span>
+                        <span class="skill-badge">Tailwind CSS</span>
+                    </div>
+                    <div class="mt-5">
+                        <a href="https://github.com/tautau08" target="_blank" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium">
+                            View Live <i data-feather="arrow-up-right" class="ml-1 h-4 w-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Project 3: Delivery Anbi -->
+                <div class="glass-card p-6 flex flex-col project-card">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-semibold text-secondary-accent">Delivery Anbi</h3>
+                        <i data-feather="truck" class="text-primary-accent"></i>
+                    </div>
+                    <p class="text-main mt-3 mb-4 flex-grow">An Android food delivery app with Firebase auth, real-time chat, digital wallet, and voice-activated ordering, built with MVVM architecture.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge">Kotlin</span>
+                        <span class="skill-badge">Firebase</span>
+                        <span class="skill-badge">Android SDK</span>
+                    </div>
+                    <div class="mt-5">
+                        <a href="https://github.com/tautau08" target="_blank" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium">
+                            View on GitHub <i data-feather="arrow-up-right" class="ml-1 h-4 w-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Project 4: MediBot -->
+                <div class="glass-card p-6 flex flex-col project-card">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-semibold text-secondary-accent">MediBot</h3>
+                        <i data-feather="heart" class="text-primary-accent"></i>
+                    </div>
+                    <p class="text-main mt-3 mb-4 flex-grow">A complete desktop healthcare solution with blood donor management, pharmacy inventory control, and patient registration system.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge">C# .NET</span>
+                        <span class="skill-badge">SQL Server</span>
+                        <span class="skill-badge">Windows Forms</span>
+                    </div>
+                     <div class="mt-5">
+                        <a href="https://github.com/tautau08" target="_blank" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium">
+                            View on GitHub <i data-feather="arrow-up-right" class="ml-1 h-4 w-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="mb-20">
+            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+                Education
+            </h2>
+            <div class="space-y-6">
+                <div class="glass-card p-6 flex items-start">
+                    <div class="bg-gradient-to-br from-[#E9A319] to-[#A86523] p-3 rounded-xl mr-5">
+                        <i data-feather="book" class="text-white h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-secondary-accent">B.Sc. in Software Engineering</h3>
+                        <p class="text-main">Islamic University of Technology (IUT)</p>
+                        <p class="text-sm text-secondary-accent mt-1">Aug 2022 - Present | CGPA: 3.13/4.00</p>
+                    </div>
+                </div>
+                <div class="glass-card p-6 flex items-start">
+                    <div class="bg-gradient-to-br from-[#E9A319] to-[#A86523] p-3 rounded-xl mr-5">
+                        <i data-feather="award" class="text-white h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-secondary-accent">Higher Secondary School Certificate</h3>
+                        <p class="text-main">Notre Dame College, Dhaka</p>
+                        <p class="text-sm text-secondary-accent mt-1">Completed | GPA: 5.00/5.00</p>
+                    </div>
+                </div>
+                <div class="glass-card p-6 flex items-start">
+                    <div class="bg-gradient-to-br from-[#E9A319] to-[#A86523] p-3 rounded-xl mr-5">
+                        <i data-feather="book-open" class="text-white h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-secondary-accent">Secondary School Certificate</h3>
+                        <p class="text-main">Ideal School and College, Motijheel</p>
+                        <p class="text-sm text-secondary-accent mt-1">Completed | GPA: 5.00/5.00</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Achievements & Activities Section -->
+        <section id="achievements" class="mb-20">
+            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+                Achievements & Activities
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="star" class="mr-2 text-primary-accent"></i> Achievements
+                    </h3>
+                    <ul class="text-main space-y-4">
+                        <li class="flex items-start">
+                            <div class="bg-[#E9A319]/10 p-2 rounded-lg mr-3">
+                                <i data-feather="award" class="text-primary-accent h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium">Top 10 Finalist, CodeRush 2.0 Hackathon</span>
+                                <p class="text-secondary-accent text-sm">IUT (May 2025)</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-[#E9A319]/10 p-2 rounded-lg mr-3">
+                                <i data-feather="globe" class="text-primary-accent h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium">World Rank: 91 (Category: O)</span>
+                                <p class="text-secondary-accent text-sm">Physics Brawl Online 2023</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="users" class="mr-2 text-primary-accent"></i> Club Activities
+                    </h3>
+                    <ul class="text-main space-y-4">
+                        <li class="flex items-start">
+                            <div class="bg-[#E9A319]/10 p-2 rounded-lg mr-3">
+                                <i data-feather="cpu" class="text-primary-accent h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium">Assistant Executive</span>
+                                <p class="text-secondary-accent text-sm">IUT Computer Society</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="bg-[#E9A319]/10 p-2 rounded-lg mr-3">
+                                <i data-feather="music" class="text-primary-accent h-5 w-5"></i>
+                            </div>
+                            <div>
+                                <span class="font-medium">Provisional Secretary (Logistics)</span>
+                                <p class="text-secondary-accent text-sm">IUT Arts and Cultural Society</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="text-center">
+            <h2 class="text-3xl font-bold text-primary-accent mb-8 relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+                Get In Touch
+            </h2>
+            <p class="text-secondary-accent mb-10 max-w-2xl mx-auto text-lg">
+                I'm currently open to new opportunities and collaborations. Feel free to send me a message using the form below or connect with me on social media.
+            </p>
+            
+            <!-- Contact Form -->
+            <form id="contact-form" class="max-w-2xl mx-auto text-left">
+                <div id="form-message" class="mb-4 text-center"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <input type="text" id="name" name="name" placeholder="Your Name" class="w-full p-4 text-main glass-input" required>
+                    </div>
+                    <div>
+                        <input type="email" id="email" name="email" placeholder="Your Email" class="w-full p-4 text-main glass-input" required>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <input type="text" id="subject" name="subject" placeholder="Subject" class="w-full p-4 text-main glass-input" required>
+                </div>
+                <div class="mb-6">
+                    <textarea id="message" name="message" rows="6" placeholder="Your Message" class="w-full p-4 text-main glass-input" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" id="submit-btn" class="bg-primary-accent text-white py-4 px-10 rounded-xl hover-bg-primary-accent transition-all duration-300 font-medium text-lg shadow-lg hover:shadow-xl hover:shadow-[#E9A319]/30 relative overflow-hidden group">
+                        <span class="relative z-10">Send Message</span>
+                        <span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Social Links -->
+            <div class="mt-16">
+                <div class="flex justify-center items-center space-x-8">
+                    <a href="mailto:tauhid062018@gmail.com" class="text-secondary-accent hover:text-primary-accent transition-colors duration-300 bg-[#E9A319]/10 p-4 rounded-full">
+                        <i data-feather="mail" class="h-6 w-6"></i>
+                    </a>
+                    <a href="https://github.com/tautau08" target="_blank" class="text-secondary-accent hover:text-primary-accent transition-colors duration-300 bg-[#E9A319]/10 p-4 rounded-full">
+                        <i data-feather="github" class="h-6 w-6"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/tauhidur-rahman-tauhid" target="_blank" class="text-secondary-accent hover:text-primary-accent transition-colors duration-300 bg-[#E9A319]/10 p-4 rounded-full">
+                        <i data-feather="linkedin" class="h-6 w-6"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center mt-20 pt-8 border-t border-gray-800">
+            <p class="text-secondary-accent">&copy; 2025 Tauhidur Rahman Tauhid. All Rights Reserved.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Function to handle section activation on scroll
+        function activateSections() {
+            const sections = document.querySelectorAll('section');
+            const windowHeight = window.innerHeight;
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                
+                if (sectionTop < windowHeight * 0.75) {
+                    section.classList.add('active');
+                }
+            });
+        }
+        
+        // Initialize sections on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            activateSections();
+            
+            // Set up scroll event listener
+            window.addEventListener('scroll', activateSections);
+            
+            // Highlight active nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (scrollY >= (sectionTop - 200)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Contact Form Submission
+        const contactForm = document.getElementById('contact-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const formMessage = document.getElementById('form-message');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            // Simple validation
+            if (!name || !email || !subject || !message) {
+                formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Please fill out all fields.</p>`;
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="relative z-10">Sending...</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+
+            // --- IMPORTANT ---
+            // You need to configure your email settings here.
+            // Go to your Google Account -> Security -> 2-Step Verification -> App Passwords
+            // Create a new app password and use it below.
+            Email.send({
+                // --- Your SMTP.js Credentials ---
+                Host: "smtp.gmail.com",
+                Username: "YOUR_GMAIL_USERNAME", // e.g., yourname@gmail.com
+                Password: "YOUR_GMAIL_APP_PASSWORD", // The 16-character password you generated
+                To: 'tauhid062018@gmail.com', // The email address you want to receive messages at
+                From: email, // The sender's email from the form
+                Subject: `New Contact Form Message: ${subject}`,
+                Body: `
+                    <h3>New message from your portfolio contact form:</h3>
+                    <p><b>Name:</b> ${name}</p>
+                    <p><b>Email:</b> ${email}</p>
+                    <hr>
+                    <p><b>Message:</b></p>
+                    <p>${message}</p>
+                `
+            }).then(
+                response => {
+                    // Success
+                    formMessage.innerHTML = `<p class="text-green-400 bg-green-900/20 py-2 px-4 rounded-lg">Message sent successfully! I will get back to you soon.</p>`;
+                    contactForm.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="relative z-10">Send Message</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+                }
+            ).catch(
+                error => {
+                    // Error
+                    console.error("SMTP.js Error: ", error);
+                    formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Sorry, something went wrong. Please try again later.</p>`;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span class="relative z-10">Send Message</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+                }
+            );
+        });
+    </script>
+</body>
+</html>
