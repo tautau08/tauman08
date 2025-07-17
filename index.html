@@ -90,6 +90,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         :root {
             --primary-accent: #E9A319;
@@ -799,17 +800,20 @@
             });
         });
 
+        // Initialize EmailJS
+        emailjs.init("ME4yAKoPTNO_E9CCR"); // Your EmailJS public key
+        
         // Contact Form Submission
         const contactForm = document.getElementById('contact-form');
         const submitBtn = document.getElementById('submit-btn');
         const formMessage = document.getElementById('form-message');
 
-        contactForm.addEventListener('submit', async function(e) {
+        contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
 
             // Simple validation
             if (!name || !email || !message) {
@@ -817,33 +821,44 @@
                 return;
             }
 
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="relative z-10">Sending...</span>';
-
-            try {
-                const response = await fetch('http://localhost:3000/send-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name, email, message }),
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    formMessage.innerHTML = `<p class="text-green-400 bg-green-900/20 py-2 px-4 rounded-lg">${result.message}</p>`;
-                    contactForm.reset();
-                } else {
-                    formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">${result.message}</p>`;
-                }
-            } catch (error) {
-                console.error('Fetch Error:', error);
-                formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Sorry, something went wrong. Please try again later.</p>`;
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span class="relative z-10">Send Message</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Please enter a valid email address.</p>`;
+                return;
             }
+
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="relative z-10">Sending...</span>';
+            submitBtn.disabled = true;
+
+            // Send email using EmailJS
+            emailjs.send("service_p1768ak", "template_iei2reb", {
+                from_name: name,
+                from_email: email,
+                message: message,
+                to_name: "Tauhidur Rahman Tauhid",
+                to_email: "tauhid04023@gmail.com"
+            })
+            .then(function() {
+                formMessage.innerHTML = `<p class="text-green-400 bg-green-900/20 py-2 px-4 rounded-lg">✅ Message sent successfully! I'll get back to you soon.</p>`;
+                contactForm.reset();
+            })
+            .catch(function(error) {
+                console.error('EmailJS Error:', error);
+                formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">❌ Failed to send message. Please try again or contact me directly.</p>`;
+            })
+            .finally(function() {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Clear message after 5 seconds
+                setTimeout(() => {
+                    formMessage.innerHTML = '';
+                }, 5000);
+            });
         });
     </script>
 </body>
