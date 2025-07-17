@@ -90,8 +90,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/feather-icons"></script>
-    <!-- SMTP.js library for sending emails -->
-    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <style>
         :root {
             --primary-accent: #E9A319;
@@ -107,6 +105,15 @@
             color: var(--main-text);
             min-height: 100vh;
             overflow-x: hidden;
+            overflow-y: auto;
+            padding-bottom: 0 !important;
+        }
+        
+        /* Mobile-first responsive design */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
         }
         
         /* Glassmorphism effect for cards and inputs */
@@ -118,22 +125,53 @@
             border-radius: 1.5rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             transition: all 0.4s ease;
+            animation: floatCard 6s ease-in-out infinite;
         }
         
         .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(233, 163, 25, 0.2);
+            transform: translateY(-12px);
+            box-shadow: 0 16px 48px rgba(233, 163, 25, 0.25);
             border-color: rgba(233, 163, 25, 0.3);
+            animation-play-state: paused;
         }
         
         .glass-input {
             background: rgba(255, 255, 255, 0.07);
+            animation: none;
         }
         
         .glass-input:focus {
             outline: none;
             border-color: var(--primary-accent);
             box-shadow: 0 0 0 3px rgba(233, 163, 25, 0.3);
+        }
+
+        /* Floating animation for cards */
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Staggered animation delays for cards */
+        .glass-card:nth-child(1) { animation-delay: 0s; }
+        .glass-card:nth-child(2) { animation-delay: 0.5s; }
+        .glass-card:nth-child(3) { animation-delay: 1s; }
+        .glass-card:nth-child(4) { animation-delay: 1.5s; }
+        .glass-card:nth-child(5) { animation-delay: 2s; }
+        .glass-card:nth-child(6) { animation-delay: 2.5s; }
+        
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .glass-card, .glass-input {
+                border-radius: 1rem;
+                backdrop-filter: blur(12px) saturate(180%);
+                -webkit-backdrop-filter: blur(12px) saturate(180%);
+            }
+            
+            .glass-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 32px rgba(233, 163, 25, 0.2);
+            }
         }
 
         /* Custom scrollbar for a modern look */
@@ -175,6 +213,10 @@
             opacity: 0.2;
             z-index: -1;
             animation: float 15s infinite ease-in-out;
+            pointer-events: none;
+            max-height: 80vh;
+            max-width: 80vw;
+            bottom: unset;
         }
         
         .blob-1 {
@@ -182,13 +224,15 @@
             top: -300px;
             right: -200px;
             animation-delay: 0s;
+            max-height: 60vh;
         }
         
         .blob-2 {
             background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-            bottom: -300px;
+            bottom: 0;
             left: -200px;
             animation-delay: 2s;
+            max-height: 60vh;
         }
         
         @keyframes float {
@@ -196,6 +240,26 @@
             25% { transform: translate(20px, 20px) rotate(5deg); }
             50% { transform: translate(0, 40px) rotate(0deg); }
             75% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+        
+        /* Mobile responsive background blobs */
+        @media (max-width: 768px) {
+            .bg-blob {
+                width: 400px;
+                height: 400px;
+                filter: blur(60px);
+                opacity: 0.15;
+            }
+            
+            .blob-1 {
+                top: -200px;
+                right: -150px;
+            }
+            
+            .blob-2 {
+                bottom: -200px;
+                left: -150px;
+            }
         }
         
         /* Animations */
@@ -233,12 +297,36 @@
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            animation: floatBadge 4s ease-in-out infinite;
         }
         
         .skill-badge:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
             background: rgba(233, 163, 25, 0.15);
             border-color: rgba(233, 163, 25, 0.3);
+            box-shadow: 0 8px 16px rgba(233, 163, 25, 0.2);
+            animation-play-state: paused;
+        }
+        
+        @keyframes floatBadge {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Staggered animation for skill badges */
+        .skill-badge:nth-child(1) { animation-delay: 0s; }
+        .skill-badge:nth-child(2) { animation-delay: 0.2s; }
+        .skill-badge:nth-child(3) { animation-delay: 0.4s; }
+        .skill-badge:nth-child(4) { animation-delay: 0.6s; }
+        .skill-badge:nth-child(5) { animation-delay: 0.8s; }
+        .skill-badge:nth-child(6) { animation-delay: 1s; }
+        
+        /* Mobile responsive skill badges */
+        @media (max-width: 768px) {
+            .skill-badge {
+                padding: 4px 10px;
+                font-size: 12px;
+            }
         }
         
         /* Project card styling */
@@ -293,67 +381,64 @@
     <div class="bg-blob blob-2"></div>
     
     <!-- Main Container -->
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-6xl">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-6xl">
 
         <!-- Header / Hero Section -->
-        <header class="flex flex-col md:flex-row items-center justify-between mb-16 pt-16 animate-fade">
-            <div class="text-center md:text-left md:w-2/3 mb-12 md:mb-0">
-                <h1 class="text-4xl md:text-6xl font-bold text-main mb-3">Tauhidur Rahman <span class="text-primary-accent">Tauhid</span></h1>
+        <header class="flex flex-col md:flex-row items-center justify-between mb-12 md:mb-16 pt-8 md:pt-16 animate-fade">
+            <div class="text-center md:text-left md:w-2/3 mb-8 md:mb-0">
+                <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-main mb-3 leading-tight">Tauhidur Rahman <span class="text-primary-accent">Tauhid</span></h1>
                 <div class="inline-block bg-gradient-to-r from-[#E9A319] to-[#A86523] text-transparent bg-clip-text">
-                    <h2 class="text-xl md:text-2xl font-medium">Software Engineering Student & Full-Stack Developer</h2>
+                    <h2 class="text-lg sm:text-xl md:text-2xl font-medium">Software Engineering Student & Full-Stack Developer</h2>
                 </div>
-                <p class="mt-5 max-w-xl text-secondary-accent text-lg leading-relaxed">
+                <p class="mt-4 md:mt-5 max-w-xl mx-auto md:mx-0 text-secondary-accent text-base md:text-lg leading-relaxed">
                     A passionate developer crafting elegant, efficient solutions from dynamic web applications to robust backend systems.
                 </p>
-                <div class="mt-10 flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#contact" class="bg-primary-accent text-white py-3 px-6 rounded-xl hover-bg-primary-accent transition-all duration-300 flex items-center justify-center font-medium shadow-lg hover:shadow-xl hover:shadow-[#E9A319]/20" aria-label="Contact Tauhidur Rahman Tauhid">
+                <div class="mt-8 md:mt-10 flex flex-col sm:flex-row justify-center md:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
+                    <a href="#contact" class="bg-primary-accent text-white py-3 px-6 rounded-xl hover-bg-primary-accent transition-all duration-300 flex items-center justify-center font-medium shadow-lg hover:shadow-xl hover:shadow-[#E9A319]/20 transform hover:scale-105" aria-label="Contact Tauhidur Rahman Tauhid">
                         <i data-feather="mail" class="mr-2 h-5 w-5" aria-hidden="true"></i> Contact Me
                     </a>
-                    <a href="#projects" class="border-2 border-primary-accent text-primary-accent py-3 px-6 rounded-xl hover:bg-[#E9A319]/10 transition-all duration-300 flex items-center justify-center font-medium" aria-label="View Tauhidur Rahman Tauhid's projects">
+                    <a href="#projects" class="border-2 border-primary-accent text-primary-accent py-3 px-6 rounded-xl hover:bg-[#E9A319]/10 transition-all duration-300 flex items-center justify-center font-medium transform hover:scale-105" aria-label="View Tauhidur Rahman Tauhid's projects">
                         <i data-feather="briefcase" class="mr-2 h-5 w-5" aria-hidden="true"></i> View Projects
                     </a>
                 </div>
             </div>
-            <div class="relative">
+            <div class="relative mt-8 md:mt-0">
                 <div class="absolute inset-0 bg-gradient-to-br from-[#E9A319] to-[#A86523] rounded-full blur-xl opacity-30 animate-pulse"></div>
-                <img src="https://avatars.githubusercontent.com/u/127976351?v=4" alt="Tauhidur Rahman Tauhid - Software Engineer and Full-Stack Developer" class="relative rounded-full w-56 h-56 md:w-72 md:h-72 object-cover border-4 border-primary-accent shadow-2xl z-10" loading="eager" width="288" height="288">
+                <img src="https://avatars.githubusercontent.com/u/127976351?v=4" alt="Tauhidur Rahman Tauhid - Software Engineer and Full-Stack Developer" class="relative rounded-full w-48 h-48 sm:w-56 sm:h-56 md:w-72 md:h-72 object-cover border-4 border-primary-accent shadow-2xl z-10 transform hover:scale-105 transition-transform duration-300" loading="eager" width="288" height="288">
             </div>
         </header>
 
         <!-- Navigation Links -->
-        <nav class="glass-card p-4 mb-16 sticky top-4 z-50 animate-fade delay-200" role="navigation" aria-label="Main navigation">
-            <ul class="flex flex-wrap items-center justify-center gap-4 md:gap-8">
-                <li><a href="#about" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium" aria-label="About Tauhidur Rahman Tauhid">About</a></li>
-                <li><a href="#skills" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium" aria-label="Technical skills and expertise">Skills</a></li>
-                <li><a href="#projects" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium" aria-label="Featured projects portfolio">Projects</a></li>
-                <li><a href="#education" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium" aria-label="Educational background">Education</a></li>
-                <li><a href="#achievements" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium" aria-label="Achievements and activities">Achievements</a></li>
-                <li><a href="#contact" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-base md:text-lg font-medium" aria-label="Contact information">Contact</a></li>
+        <nav class="glass-card p-3 md:p-4 mb-12 md:mb-16 sticky top-4 z-50 animate-fade delay-200" role="navigation" aria-label="Main navigation">
+            <ul class="flex flex-wrap items-center justify-center gap-2 md:gap-4 lg:gap-8">
+                <li><a href="#about" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-sm md:text-base lg:text-lg font-medium px-2 py-1" aria-label="About Tauhidur Rahman Tauhid">About</a></li>
+                <li><a href="#skills" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-sm md:text-base lg:text-lg font-medium px-2 py-1" aria-label="Technical skills and expertise">Skills</a></li>
+                <li><a href="#projects" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-sm md:text-base lg:text-lg font-medium px-2 py-1" aria-label="Featured projects portfolio">Projects</a></li>
+                <li><a href="#education" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-sm md:text-base lg:text-lg font-medium px-2 py-1" aria-label="Educational background">Education</a></li>
+                <li><a href="#achievements" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-sm md:text-base lg:text-lg font-medium px-2 py-1" aria-label="Achievements and activities">Achievements</a></li>
+                <li><a href="#contact" class="nav-link text-secondary-accent hover:text-primary-accent transition-colors duration-300 text-sm md:text-base lg:text-lg font-medium px-2 py-1" aria-label="Contact information">Contact</a></li>
             </ul>
         </nav>
 
         <!-- About Section -->
-        <section id="about" class="mb-20">
-            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
+        <section id="about" class="mb-16 md:mb-20">
+            <h2 class="text-2xl md:text-3xl font-bold text-primary-accent mb-8 md:mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
                 About Me
             </h2>
-            <div class="glass-card p-8">
-                <p id="about-text" class="text-lg text-main leading-relaxed">
+            <div class="glass-card p-6 md:p-8">
+                <p id="about-text" class="text-base md:text-lg text-main leading-relaxed">
                     I am a dedicated Software Engineering student at the Islamic University of Technology (IUT) with a strong foundation in <strong>full-stack development</strong>. My passion lies in crafting beautiful user interfaces and building scalable, efficient backend systems. I have hands-on experience with a variety of modern technologies including <strong>React</strong>, <strong>Next.js</strong>, <strong>.NET</strong>, and <strong>blockchain development with Solidity</strong>. I thrive in collaborative environments and am always eager to learn and take on new challenges in software development.
                 </p>
-                <div class="mt-8 flex flex-wrap gap-4">
+                <div class="mt-6 md:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 md:gap-4">
                     <div class="flex items-center">
                         <div class="w-3 h-3 rounded-full bg-[#E9A319] mr-3 animate-pulse" aria-hidden="true"></div>
-                        <span class="text-secondary-accent">Full-stack development</span>
+                        <span class="text-secondary-accent text-sm md:text-base">Full-stack development</span>
                     </div>
                     <div class="flex items-center">
                         <div class="w-3 h-3 rounded-full bg-[#E9A319] mr-3 animate-pulse" aria-hidden="true"></div>
-                        <span class="text-secondary-accent">Blockchain technology</span>
+                        <span class="text-secondary-accent text-sm md:text-base">Blockchain technology</span>
                     </div>
-                    <div class="flex items-center">
-                        <div class="w-3 h-3 rounded-full bg-[#E9A319] mr-3 animate-pulse" aria-hidden="true"></div>
-                        <span class="text-secondary-accent">UI/UX design principles</span>
-                    </div>
+                   
                 </div>
             </div>
         </section>
@@ -370,9 +455,9 @@
                         <i data-feather="layout" class="mr-2 text-primary-accent" aria-hidden="true"></i> Front-End Development
                     </h3>
                     <div class="flex flex-wrap gap-3">
-                        <span class="skill-badge">HTML5</span>
-                        <span class="skill-badge">CSS3</span>
-                        <span class="skill-badge">JavaScript ES6+</span>
+                        <span class="skill-badge">HTML</span>
+                        <span class="skill-badge">CSS</span>
+                        <span class="skill-badge">JavaScript</span>
                         <span class="skill-badge">React.js</span>
                         <span class="skill-badge">Next.js</span>
                         <span class="skill-badge">Tailwind CSS</span>
@@ -384,11 +469,24 @@
                         <i data-feather="server" class="mr-2 text-primary-accent" aria-hidden="true"></i> Back-End Development
                     </h3>
                     <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">Node.js</span>
                         <span class="skill-badge">C/C++</span>
                         <span class="skill-badge">C#</span>
                         <span class="skill-badge">Java</span>
                         <span class="skill-badge">Kotlin</span>
                         <span class="skill-badge">.NET Framework</span>
+                    </div>
+                </article>
+                <!-- Blockchain -->
+                <article class="glass-card p-6 project-card">
+                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
+                        <i data-feather="box" class="mr-2 text-primary-accent" aria-hidden="true"></i> Blockchain Technology
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-badge">Solidity</span>
+                        <span class="skill-badge">Hardhat</span>
+                        <span class="skill-badge">Ethers.js</span>
+                        <span class="skill-badge">Web3Modal</span>
                     </div>
                 </article>
                 <!-- DBMS -->
@@ -397,7 +495,9 @@
                         <i data-feather="database" class="mr-2 text-primary-accent" aria-hidden="true"></i> Database Management
                     </h3>
                     <div class="flex flex-wrap gap-3">
-                        <span class="skill-badge">SQL Server</span>
+                        <span class="skill-badge">MySQL</span>
+                        <span class="skill-badge">Oracle</span>
+                        <span class="skill-badge">MongoDB</span>
                         <span class="skill-badge">Firebase</span>
                     </div>
                 </article>
@@ -414,28 +514,16 @@
                         <span class="skill-badge">Android Studio</span>
                     </div>
                 </article>
-                <!-- Blockchain -->
-                <article class="glass-card p-6 project-card">
-                    <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
-                        <i data-feather="box" class="mr-2 text-primary-accent" aria-hidden="true"></i> Blockchain Technology
-                    </h3>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="skill-badge">Solidity</span>
-                        <span class="skill-badge">Hardhat</span>
-                        <span class="skill-badge">Ethers.js</span>
-                        <span class="skill-badge">Web3Modal</span>
-                    </div>
-                </article>
                  <!-- Other -->
                 <article class="glass-card p-6 project-card">
                     <h3 class="text-xl font-semibold text-secondary-accent mb-4 flex items-center">
                         <i data-feather="code" class="mr-2 text-primary-accent" aria-hidden="true"></i> Other Technologies
                     </h3>
                     <div class="flex flex-wrap gap-3">
-                        <span class="skill-badge">REST API</span>
                         <span class="skill-badge">OOP</span>
                         <span class="skill-badge">IPFS</span>
                         <span class="skill-badge">Pinata</span>
+                        <span class="skill-badge">REST API</span> 
                     </div>
                 </article>
             </div>
@@ -460,9 +548,12 @@
                         <span class="skill-badge">Hardhat</span>
                         <span class="skill-badge">Ethereum</span>
                     </div>
-                    <div class="mt-5">
-                        <a href="https://github.com/tautau08" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View CrypTau NFT Marketplace live demo">
+                    <div class="mt-5 flex flex-col sm:flex-row gap-3">
+                        <a href="https://cryptau.vercel.app/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View CrypTau NFT Marketplace live demo">
                             View Live <i data-feather="arrow-up-right" class="ml-1 h-4 w-4" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://github.com/tautau08/CrypTau-NFT-Marketplace" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View CrypTau NFT Marketplace on GitHub">
+                            View on GitHub <i data-feather="github" class="ml-1 h-4 w-4" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -479,9 +570,12 @@
                         <span class="skill-badge">Tailwind CSS</span>
                         <span class="skill-badge">JavaScript</span>
                     </div>
-                    <div class="mt-5">
-                        <a href="https://github.com/tautau08" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View NikeDemo webapp live demo">
+                    <div class="mt-5 flex flex-col sm:flex-row gap-3">
+                        <a href="https://nike-demo-webapp.vercel.app/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View NikeDemo webapp live demo">
                             View Live <i data-feather="arrow-up-right" class="ml-1 h-4 w-4" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://github.com/tautau08/NikeDemo-Webapp" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View NikeDemo webapp on GitHub">
+                            View on GitHub <i data-feather="github" class="ml-1 h-4 w-4" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -500,7 +594,7 @@
                     </div>
                     <div class="mt-5">
                         <a href="https://github.com/tautau08" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View Delivery Anbi project on GitHub">
-                            View on GitHub <i data-feather="arrow-up-right" class="ml-1 h-4 w-4" aria-hidden="true"></i>
+                            View on GitHub <i data-feather="github" class="ml-1 h-4 w-4" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
@@ -519,51 +613,13 @@
                     </div>
                      <div class="mt-5">
                         <a href="https://github.com/tautau08" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-primary-accent hover:text-[#FFB82E] transition-colors font-medium" aria-label="View MediBot healthcare system on GitHub">
-                            View on GitHub <i data-feather="arrow-up-right" class="ml-1 h-4 w-4" aria-hidden="true"></i>
+                            View on GitHub <i data-feather="github" class="ml-1 h-4 w-4" aria-hidden="true"></i>
                         </a>
                     </div>
                 </article>
             </div>
         </section>
 
-        <!-- Education Section -->
-        <section id="education" class="mb-20">
-            <h2 class="text-3xl font-bold text-primary-accent mb-10 text-center relative inline-block mx-auto pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-16 after:h-1 after:bg-gradient-to-r after:from-[#E9A319] after:to-[#A86523]">
-                Education
-            </h2>
-            <div class="space-y-6">
-                <div class="glass-card p-6 flex items-start">
-                    <div class="bg-gradient-to-br from-[#E9A319] to-[#A86523] p-3 rounded-xl mr-5">
-                        <i data-feather="book" class="text-white h-6 w-6"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-secondary-accent">B.Sc. in Software Engineering</h3>
-                        <p class="text-main">Islamic University of Technology (IUT)</p>
-                        <p class="text-sm text-secondary-accent mt-1">Aug 2022 - Present | CGPA: 3.13/4.00</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 flex items-start">
-                    <div class="bg-gradient-to-br from-[#E9A319] to-[#A86523] p-3 rounded-xl mr-5">
-                        <i data-feather="award" class="text-white h-6 w-6"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-secondary-accent">Higher Secondary School Certificate</h3>
-                        <p class="text-main">Notre Dame College, Dhaka</p>
-                        <p class="text-sm text-secondary-accent mt-1">Completed | GPA: 5.00/5.00</p>
-                    </div>
-                </div>
-                <div class="glass-card p-6 flex items-start">
-                    <div class="bg-gradient-to-br from-[#E9A319] to-[#A86523] p-3 rounded-xl mr-5">
-                        <i data-feather="book-open" class="text-white h-6 w-6"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-secondary-accent">Secondary School Certificate</h3>
-                        <p class="text-main">Ideal School and College, Motijheel</p>
-                        <p class="text-sm text-secondary-accent mt-1">Completed | GPA: 5.00/5.00</p>
-                    </div>
-                </div>
-            </div>
-        </section>
         
         <!-- Achievements & Activities Section -->
         <section id="achievements" class="mb-20">
@@ -648,10 +704,6 @@
                     </div>
                 </div>
                 <div class="mb-6">
-                    <label for="subject" class="sr-only">Subject</label>
-                    <input type="text" id="subject" name="subject" placeholder="Subject" class="w-full p-4 text-main glass-input" required aria-required="true">
-                </div>
-                <div class="mb-6">
                     <label for="message" class="sr-only">Your Message</label>
                     <textarea id="message" name="message" rows="6" placeholder="Your Message" class="w-full p-4 text-main glass-input" required aria-required="true"></textarea>
                 </div>
@@ -681,13 +733,18 @@
         </section>
 
         <!-- Footer -->
-        <footer class="text-center mt-20 pt-8 border-t border-gray-800">
+        <footer class="text-center mt-4 pt-4 border-t border-gray-800">
             <p class="text-secondary-accent">&copy; 2025 Tauhidur Rahman Tauhid. All Rights Reserved.</p>
             <p class="text-sm text-gray-500 mt-2">
                 <a href="mailto:tauhid062018@gmail.com" class="hover:text-primary-accent transition-colors">Contact</a> |
                 <a href="https://github.com/tautau08" target="_blank" rel="noopener noreferrer" class="hover:text-primary-accent transition-colors">GitHub</a> |
                 <a href="https://linkedin.com/in/tauhidur-rahman-tauhid" target="_blank" rel="noopener noreferrer" class="hover:text-primary-accent transition-colors">LinkedIn</a>
             </p>
+            <style>
+                @media (min-width: 768px) {
+                    footer { margin-bottom: 0 !important; }
+                }
+            </style>
         </footer>
 
     </div>
@@ -747,60 +804,46 @@
         const submitBtn = document.getElementById('submit-btn');
         const formMessage = document.getElementById('form-message');
 
-        contactForm.addEventListener('submit', function(e) {
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
             const message = document.getElementById('message').value;
 
             // Simple validation
-            if (!name || !email || !subject || !message) {
+            if (!name || !email || !message) {
                 formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Please fill out all fields.</p>`;
                 return;
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="relative z-10">Sending...</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+            submitBtn.innerHTML = '<span class="relative z-10">Sending...</span>';
 
-            // --- IMPORTANT ---
-            // You need to configure your email settings here.
-            // Go to your Google Account -> Security -> 2-Step Verification -> App Passwords
-            // Create a new app password and use it below.
-            Email.send({
-                // --- Your SMTP.js Credentials ---
-                Host: "smtp.gmail.com",
-                Username: "YOUR_GMAIL_USERNAME", // e.g., yourname@gmail.com
-                Password: "YOUR_GMAIL_APP_PASSWORD", // The 16-character password you generated
-                To: 'tauhid062018@gmail.com', // The email address you want to receive messages at
-                From: email, // The sender's email from the form
-                Subject: `New Contact Form Message: ${subject}`,
-                Body: `
-                    <h3>New message from your portfolio contact form:</h3>
-                    <p><b>Name:</b> ${name}</p>
-                    <p><b>Email:</b> ${email}</p>
-                    <hr>
-                    <p><b>Message:</b></p>
-                    <p>${message}</p>
-                `
-            }).then(
-                response => {
-                    // Success
-                    formMessage.innerHTML = `<p class="text-green-400 bg-green-900/20 py-2 px-4 rounded-lg">Message sent successfully! I will get back to you soon.</p>`;
+            try {
+                const response = await fetch('http://localhost:3000/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, message }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    formMessage.innerHTML = `<p class="text-green-400 bg-green-900/20 py-2 px-4 rounded-lg">${result.message}</p>`;
                     contactForm.reset();
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<span class="relative z-10">Send Message</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+                } else {
+                    formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">${result.message}</p>`;
                 }
-            ).catch(
-                error => {
-                    // Error
-                    console.error("SMTP.js Error: ", error);
-                    formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Sorry, something went wrong. Please try again later.</p>`;
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<span class="relative z-10">Send Message</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
-                }
-            );
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                formMessage.innerHTML = `<p class="text-red-400 bg-red-900/20 py-2 px-4 rounded-lg">Sorry, something went wrong. Please try again later.</p>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="relative z-10">Send Message</span><span class="absolute inset-0 bg-gradient-to-r from-[#FFB82E] to-[#C97A2C] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></span>';
+            }
         });
     </script>
 </body>
